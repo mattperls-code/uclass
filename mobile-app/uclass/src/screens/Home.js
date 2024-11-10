@@ -1,14 +1,12 @@
 import React from "react"
 
-import { SafeAreaView, View, Text, Button } from "react-native"
-
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 
 import { NavigationContainer } from "@react-navigation/native"
 
 import ScheduleTab from "./tabs/schedule/Schedule"
-import ClassmatesTab from "./tabs/Classmates"
-import FriendsTab from "./tabs/Friends"
+import ClassesTab from "./tabs/classes/Classes"
+import FriendsTab from "./tabs/friends/Friends"
 import AccountTab from "./tabs/account/Account"
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
@@ -21,7 +19,7 @@ const HomeScreen = ({ session }) => {
 
     const icons = {
         Schedule: faCalendar,
-        Classmates: faAddressBook,
+        Classes: faAddressBook,
         Friends: faUserFriends,
         Account: faCog
     }
@@ -29,10 +27,11 @@ const HomeScreen = ({ session }) => {
     return (
         <NavigationContainer>
             <Tab.Navigator screenOptions={({ route }) => ({
+                lazy: false,
                 headerShown: false,
                 tabBarStyle: {
                     backgroundColor: colors.white,
-                    height: 70,
+                    height: 70 + screen.bottom,
                     paddingTop: 10
                 },
                 tabBarLabelStyle: {
@@ -44,7 +43,7 @@ const HomeScreen = ({ session }) => {
                 tabBarIcon: ({ focused, color, size }) => <FontAwesomeIcon icon={icons[route.name]} color={color} size={24} />
             })}>
                 <Tab.Screen name={"Schedule"} component={ScheduleTab} />
-                <Tab.Screen name={"Classmates"} component={ClassmatesTab} />
+                <Tab.Screen name={"Classes"} component={ClassesTab} />
                 <Tab.Screen name={"Friends"} component={FriendsTab} />
                 <Tab.Screen name={"Account"} component={AccountTab} />
             </Tab.Navigator>

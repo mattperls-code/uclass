@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { ScrollView, View, Text, Pressable } from "react-native"
 
@@ -7,13 +7,15 @@ import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons
 
 import { screen, colors } from "../../../../constants"
 
+import { getSchedule } from "../../../../scripts/schedule"
+
 const DefaultScreen = ({ navigation }) => {
     const [dayIndex, setDayIndex] = useState(new Date().getDay())
 
     const day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][dayIndex]
     
-    const lastDay = () => setDayIndex((dayIndex - 1 + 6) % 6)
-    const nextDay = () => setDayIndex((dayIndex + 1) % 6)
+    const lastDay = () => setDayIndex((dayIndex - 1 + 7) % 7)
+    const nextDay = () => setDayIndex((dayIndex + 1) % 7)
 
     const hourChunks = []
 
@@ -22,7 +24,7 @@ const DefaultScreen = ({ navigation }) => {
     hourChunks.push("12 PM")
     for (let i = 1;i<12;i++) hourChunks.push(`${i} PM`);
 
-    const hourHeight = 60
+    const hourHeight = 120
 
     const hourChunkRenders = hourChunks.map((time, index) => (
         <View key={index} style={{ width: "100%", height: hourHeight }}>
@@ -52,43 +54,32 @@ const DefaultScreen = ({ navigation }) => {
         return ampmOffset + hourOffset + minuteOffset
     }
 
-    const scheduleToday = [
-        {
-            name: "English",
-            startTime: "2:30 PM",
-            endTime: "4:00 PM",
-            building: "Barlett Hall"
-        },
-        {
-            name: "Math",
-            startTime: "8:00 AM",
-            endTime: "8:50 AM",
-            building: "Engineering"
-        },
-        {
-            name: "DSA",
-            startTime: "3:45 PM",
-            endTime: "5:00 PM",
-            building: "Goessman"
-        },
-        {
-            name: "test terrible case",
-            startTime: "11:00 PM",
-            endTime: "1:00 AM",
-            building: "idc"
-        }
-    ].sort((a, b) => timeToRenderOffset(a.startTime) - timeToRenderOffset(b.startTime))
+    const [schedule, setSchedule] = useState([])
 
-    const scheduleItemRenders = scheduleToday.map(({ name, startTime, endTime, building }, index) => {
+    useEffect(() => {
+        let isMounted = true
+
+        getSchedule((computedSchedule) => {
+            if (isMounted) setSchedule(computedSchedule)
+        })
+
+        return () => isMounted = false
+    }, [])
+
+    const scheduleToday = schedule ? schedule.filter(scheduleItem => scheduleItem.day == day) : []
+    
+    scheduleToday.sort((a, b) => timeToRenderOffset(a.startTime) - timeToRenderOffset(b.startTime))
+
+    const scheduleItemRenders = scheduleToday.map(({ name, startTime, endTime, location }, index) => {
         const startTimeOffset = timeToRenderOffset(startTime)
         const endTimeOffset = timeToRenderOffset(endTime)
         
         const renderHeight = endTimeOffset > startTimeOffset ? endTimeOffset - startTimeOffset : (24 * hourHeight) - startTimeOffset
 
-        const openDetails = () => navigation.push("Details", { name, startTime, endTime, building })
+        const openDetails = () => navigation.push("Details", { name, startTime, endTime, location })
 
         return (
-            <View key={index} style={{ position: "absolute", left: 60, right: 20, top: startTimeOffset + 2, height: renderHeight - 4, borderRadius: 10, backgroundColor: `hsl(${(60 * index) % 360}, 80%, 60%)` }}>
+            <View key={index} style={{ position: "absolute", left: 60, right: 20, top: startTimeOffset + 2, height: renderHeight - 4, borderRadius: 10, backgroundColor: `hsl(${(30 * index) % 360}, 70%, 80%)` }}>
                 <Pressable onPress={openDetails}>
                     <View style={{ width: "100%", height: "100%", padding: 10, alignItems: "center", justifyContent: "center" }}>
                         <Text style={{ fontSize: 14 }}>
@@ -110,17 +101,17 @@ const DefaultScreen = ({ navigation }) => {
         <React.Fragment>
             <View style={{ paddingTop: screen.top + 20, paddingBlock: 20, paddingHorizontal: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", backgroundColor: colors.white }}>
                 <Pressable onPress={lastDay}>
-                    <View>
+                    <View style={{ padding: 10 }}>
                         <FontAwesomeIcon icon={faChevronLeft} color={colors.red} size={24} />
                     </View>
                 </Pressable>
-                <Text style={{ fontSize: 18, color: colors.black }}>
+                <Text style={{ fontSize: 24, fontWeight: "700", color: colors.black }}>
                     {
                         day
                     }
                 </Text>
                 <Pressable onPress={nextDay}>
-                    <View>
+                    <View style={{ padding: 10 }}>
                         <FontAwesomeIcon icon={faChevronRight} color={colors.red} size={24} />
                     </View>
                 </Pressable>

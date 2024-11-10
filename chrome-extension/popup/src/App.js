@@ -5,6 +5,8 @@ import UploadPage from "./pages/Upload"
 
 import supabase from "./scripts/supabase"
 
+import { colors } from "./constants"
+
 import "./styles.scss"
 
 const App = () => {
@@ -18,7 +20,13 @@ const App = () => {
         return () => listener.data.subscription.unsubscribe()
     }, [])
 
-    return session ? <UploadPage /> : <AuthPage />
+    return (
+        <div style={{ width: 300, height: 400, backgroundColor: colors.white }}>
+            {
+                session ? <UploadPage /> : <AuthPage />
+            }
+        </div>
+    )
 }
 
 export default App

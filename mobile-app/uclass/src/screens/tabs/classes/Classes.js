@@ -1,14 +1,13 @@
 import React from "react"
 
-import { createStackNavigator } from "@react-navigation/stack"
+import { createStackNavigator, TransitionPresets } from "@react-navigation/stack"
 
 import DefaultScreen from "./screens/Default"
-import DetailsScreen from "./screens/Details"
+import ClassmatesScreen from "./screens/Classmates"
 
 import { colors } from "../../../constants"
-import { TransitionPresets } from "@react-navigation/stack"
 
-const ScheduleTab = (props) => {
+const ClassmatesTab = () => {
     const Stack = createStackNavigator()
 
     const forModalPresentationIOS = (props) => {
@@ -31,14 +30,13 @@ const ScheduleTab = (props) => {
             presentation: "modal",
             cardStyle: {
                 backgroundColor: route.name == "Default" ? colors.lightGrey : "transparent",
-                borderBottomLeftRadius: undefined
             },
             cardStyleInterpolator: fixTabNestedStackCardStyleInterpolator
         })}>
             <Stack.Screen name={"Default"} component={DefaultScreen} />
-            <Stack.Screen name={"Details"} component={DetailsScreen} />
+            <Stack.Screen name={"Classmates"} component={ClassmatesScreen} />
         </Stack.Navigator>
     )
 }
 
-export default ScheduleTab
+export default ClassmatesTab

@@ -1,14 +1,14 @@
 import React from "react"
 
-import { createStackNavigator } from "@react-navigation/stack"
+import { createStackNavigator, TransitionPresets } from "@react-navigation/stack"
 
 import DefaultScreen from "./screens/Default"
-import DetailsScreen from "./screens/Details"
+import ProfileScreen from "./screens/Profile"
+import ChatScreen from "./screens/Chat"
 
 import { colors } from "../../../constants"
-import { TransitionPresets } from "@react-navigation/stack"
 
-const ScheduleTab = (props) => {
+const FriendsTab = () => {
     const Stack = createStackNavigator()
 
     const forModalPresentationIOS = (props) => {
@@ -36,9 +36,10 @@ const ScheduleTab = (props) => {
             cardStyleInterpolator: fixTabNestedStackCardStyleInterpolator
         })}>
             <Stack.Screen name={"Default"} component={DefaultScreen} />
-            <Stack.Screen name={"Details"} component={DetailsScreen} />
+            <Stack.Screen name={"Profile"} component={ProfileScreen} />
+            <Stack.Screen name={"Chat"} component={ChatScreen} />
         </Stack.Navigator>
     )
 }
 
-export default ScheduleTab
+export default FriendsTab

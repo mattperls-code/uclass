@@ -3,9 +3,10 @@ import React from "react"
 import { View, Text, Pressable } from "react-native"
 
 import { colors, screen } from "../../../../constants"
+import { getClassNameFromComposedName } from "../../../../scripts/schedule"
 
-const DetailsScreen = ({ navigation, route: { params: { name, startTime, endTime, building } } }) => {
-    const viewClassmates = () => navigation.navigate("Classmates")
+const DetailsScreen = ({ navigation, route: { params: { name, startTime, endTime, location } } }) => {
+    const viewClassmates = () => navigation.navigate("Classes", { screen: "Classmates", params: { name: getClassNameFromComposedName(name) } })
 
     return (
         <View style={{ flex: 1 }}>
@@ -25,11 +26,11 @@ const DetailsScreen = ({ navigation, route: { params: { name, startTime, endTime
                             </Text>
                             <Text style={{ paddingVertical: 5, fontSize: 16, textAlign: "center" }}>
                                 {
-                                    building
+                                    location
                                 }
                             </Text>
                             <Pressable onPress={viewClassmates}>
-                                <View style={{ marginTop: 20, width: screen.width - 40, height: 60, borderRadius: 10, alignContent: "center", justifyContent: "center", backgroundColor: colors.red }}>
+                                <View style={{ marginTop: 20, width: screen.width - 40, height: 60, borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: colors.red }}>
                                     <Text style={{ textAlign: "center", color: colors.white, fontSize: 18 }}>View Classmates</Text>
                                 </View>
                             </Pressable>
